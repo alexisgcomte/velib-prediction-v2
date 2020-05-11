@@ -40,9 +40,9 @@ class sql_query:
     
 def prophet_prediction(hour, full_dataframe):
     df_instance = full_dataframe[full_dataframe["ds"] < hour]
-    m = Prophet()
+    m = Prophet(weekly_seasonality=False, yearly_seasonality=False)
     m.fit(df_instance)
-    future = m.make_future_dataframe(periods=30, freq='min')
+    future = m.make_future_dataframe(periods=6, freq='5min')
     forecast = m.predict(future)
     predictions = forecast[forecast["ds"]>= hour]
     return list(predictions.yhat)
@@ -58,6 +58,7 @@ def result_creating( station_id):
     SELECT DISTINCT date_of_update, nb_total_free_bikes FROM velib_realtime
     WHERE station_id = {}
     AND date_of_update > DATE({})
+    AND MINUTE(date_of_update)%5 = 0
     ORDER BY date_of_update ASC
     """.format(station_id, day_of_testing)
 
@@ -74,7 +75,7 @@ def result_creating( station_id):
 
     for i in tqdm(df_results.index):
         df_results.loc[i]['prediction'] = prophet_prediction(i, df_data)
-        df_results.loc[i]['real_values'] = list(df_data[df_data['ds'] >= i][0:30]['y'])
+        df_results.loc[i]['real_values'] = list(df_data[df_data['ds'] >= i][0:6]['y'])
         df_results.loc[i]['metrics'] = measure_rmse(df_results.loc[i]["real_values"], df_results.loc[i]["prediction"])
 
     df_results.to_csv("/home/exalis/Github/velib-prediction-v2/3. Results/Facebook Prophet/Facebook Prophet Results - {} - {}.csv".format(day_of_testing, station_id))
