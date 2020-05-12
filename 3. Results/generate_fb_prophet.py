@@ -29,15 +29,15 @@ class sql_query:
             host=self.db_credentials.loc["host"][0],
             port=3306,
             db = "db_velib")
-        
+
         self.cursor = mariadb_connection.cursor()
-    
+
         cursor = self.cursor
         cursor.execute(query)
         field_names = [i[0] for i in cursor.description]
         df = pd.DataFrame(cursor, columns=field_names)
         return df
-    
+
 def prophet_prediction(hour, full_dataframe):
     df_instance = full_dataframe[full_dataframe["ds"] < hour]
     m = Prophet(weekly_seasonality=False, yearly_seasonality=False)
@@ -57,8 +57,8 @@ def result_creating( station_id):
     query = """
     SELECT DISTINCT date_of_update, nb_total_free_bikes FROM velib_realtime
     WHERE station_id = {}
-    AND date_of_update > DATE({})
-    AND MINUTE(date_of_update)%5 = 0
+    AND date_of_update > DATE('2020-05-05')
+    AND date_of_update <= DATE_ADD(DATE('{}'), INTERVAL 1 DAY)
     ORDER BY date_of_update ASC
     """.format(station_id, day_of_testing)
 
