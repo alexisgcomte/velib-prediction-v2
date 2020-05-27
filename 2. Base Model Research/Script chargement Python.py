@@ -68,9 +68,9 @@ def loading_models(list_of_stations):
 
     for i in tqdm(range(len(list_of_stations))):
         try:
-            LSTM_A_list[i] = tf.keras.models.load_model('/home/ubuntu/Github/velib-prediction-v2/4. Models/Tensorflow Univariate - {} - {} - LSTM_A.h5'.format(day_of_testing, list_of_stations[i]))
-            LSTM_B_list[i] = tf.keras.models.load_model('/home/ubuntu/Github/velib-prediction-v2/4. Models/Tensorflow Univariate - {} - {} - LSTM_B.h5'.format(day_of_testing, list_of_stations[i]))
-            std_list[i] = load('/home/ubuntu/Github/velib-prediction-v2/4. Models/Tensorflow Univariate - {} - {} - std.joblib'.format(day_of_testing, list_of_stations[i]))
+            LSTM_A_list[i] = tf.keras.models.load_model('/home/exalis/Github/velib-prediction-v2/4. Models/Tensorflow Univariate - {} - {} - LSTM_A.h5'.format(day_of_testing, list_of_stations[i]))
+            LSTM_B_list[i] = tf.keras.models.load_model('/home/exalis/Github/velib-prediction-v2/4. Models/Tensorflow Univariate - {} - {} - LSTM_B.h5'.format(day_of_testing, list_of_stations[i]))
+            std_list[i] = load('/home/exalis/Github/velib-prediction-v2/4. Models/Tensorflow Univariate - {} - {} - std.joblib'.format(day_of_testing, list_of_stations[i]))
         except:
             print('impossible to load ', list_of_stations[i])
 
@@ -125,7 +125,7 @@ def predict_iteration():
 day_of_testing = '2020-05-19'
 past_history = 36
 future_target = 6
-list_of_stations = list_stations()[:50]
+list_of_stations = list_stations()
 LSTM_A_list, LSTM_B_list, std_list = loading_models(list_of_stations)
 
 df_prediction = predict_iteration()
