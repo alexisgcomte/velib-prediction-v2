@@ -1,5 +1,8 @@
 # Starting process in background
-nohup python auto_prediction.py &
+nohup python auto_prediction_5min_Global_timeloop.py &
 
 # Finding the process
-ps ax | grep auto*
+ps ax | grep auto_pred*
+
+sudo timedatectl set-timezone Europe/Paris
+

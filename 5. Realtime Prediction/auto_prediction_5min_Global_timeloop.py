@@ -118,6 +118,20 @@ list_of_stations = list_stations()
 # Loading the models only once
 LSTM_A, LSTM_B, std = loading_models_unique(station_id, day_of_testing)
 
-df_prediction = create_result_df()
-predict_iteration_unique(list_of_stations, df_prediction, LSTM_A, LSTM_B, std)
-df_prediction.to_csv('../7. Predictions/5min_predictions_global.csv')
+
+tl = Timeloop()
+
+@tl.job(interval=timedelta(minutes=5))
+def predicting_by_5_minutes():
+    df_prediction = create_result_df()
+    predict_iteration_unique(list_of_stations, df_prediction, LSTM_A, LSTM_B, std)
+    df_prediction.to_csv('../7. Predictions/5min_predictions_global.csv')
+
+tl.start()
+
+while True:
+    try:
+        time.sleep(1)
+    except KeyboardInterrupt:
+        tl.stop()
+        break
