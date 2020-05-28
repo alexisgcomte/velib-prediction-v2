@@ -71,7 +71,7 @@ def loading_models_unique(station_id, day_of_testing):
 def create_result_df():
     # Extracting base for prediction 
 
-    request = sql_query("../../aws_mariadb_crendentials - write.csv")
+    request = sql_query("../../aws_mariadb_crendentials.csv")
 
     query = """
     SELECT station_id, date_of_update, nb_total_free_bikes FROM db_velib.velib_realtime
