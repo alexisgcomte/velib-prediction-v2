@@ -45,7 +45,7 @@ def measure_rmse(actual, predicted):
     return math.sqrt(mean_squared_error(actual, predicted))
 
 def list_stations():
-    request = sql_query("../../aws_mariadb_crendentials - write.csv")
+    request = sql_query("../../aws_mariadb_crendentials.csv")
     query = """
     SELECT DISTINCT station_id FROM velib_realtime
     """
@@ -59,9 +59,9 @@ def list_stations():
 def loading_models_unique(station_id, day_of_testing):
 
     try:
-        LSTM_A = tf.keras.models.load_model('/home/exalis/Github/velib-prediction-v2/4. Models/Tensorflow Univariate - {} - {} - LSTM_A.h5'.format(day_of_testing, station_id))
-        LSTM_B = tf.keras.models.load_model('/home/exalis/Github/velib-prediction-v2/4. Models/Tensorflow Univariate - {} - {} - LSTM_B.h5'.format(day_of_testing, station_id))
-        std = load('/home/exalis/Github/velib-prediction-v2/4. Models/Tensorflow Univariate - {} - {} - std.joblib'.format(day_of_testing, station_id))
+        LSTM_A = tf.keras.models.load_model('../4. Models/Tensorflow Univariate - {} - {} - LSTM_A.h5'.format(day_of_testing, station_id))
+        LSTM_B = tf.keras.models.load_model('../4. Models/Tensorflow Univariate - {} - {} - LSTM_B.h5'.format(day_of_testing, station_id))
+        std = load('../4. Models/Tensorflow Univariate - {} - {} - std.joblib'.format(day_of_testing, station_id))
         return LSTM_A, LSTM_B, std
     
     except:
@@ -124,7 +124,7 @@ tl = Timeloop()
 def predicting_by_5_minutes():
     df_prediction = create_result_df()
     predict_iteration_unique(list_of_stations, df_prediction, LSTM_A, LSTM_B, std)
-    df_prediction.to_csv('/home/exalis/Github/velib-prediction-v2/prediction - {}.csv'.format(str(pd.Timestamp.now())[:16]))
+    df_prediction.to_csv('../7. Predictions/prediction - {}.csv'.format(str(pd.Timestamp.now())[:16]))
 
 tl.start()
 
