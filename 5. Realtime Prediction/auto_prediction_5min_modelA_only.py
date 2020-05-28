@@ -120,11 +120,11 @@ LSTM_A, LSTM_B, std = loading_models_unique(station_id, day_of_testing)
 
 tl = Timeloop()
 
-@tl.job(interval=timedelta(minutes=1))
+@tl.job(interval=timedelta(minutes=5))
 def predicting_by_5_minutes():
     df_prediction = create_result_df()
     predict_iteration_unique(list_of_stations, df_prediction, LSTM_A, LSTM_B, std)
-    df_prediction.to_csv('../7. Predictions/prediction - {}.csv'.format(str(pd.Timestamp.now())[:16]))
+    df_prediction.to_csv('../7. Predictions/prediction_model_A.csv')
 
 tl.start()
 

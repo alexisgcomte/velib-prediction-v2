@@ -1,0 +1,5 @@
+# Starting process in background
+nohup python auto_prediction.py &
+
+# Finding the process
+ps ax | grep auto*
