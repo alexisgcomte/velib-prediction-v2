@@ -1,0 +1,17 @@
+
+{% extends 'layout.html' %}
+
+{% block body%}
+
+{% for key, value in result.items() %}
+   <p></p>
+<input type="button" onclick="history.back();" value="Previous">
+<p></p>
+   <h1> <center>Prediction at {{ value }} :</center> </h1>
+   <img src = static/images/{{ value }} align="center" width="1200" height="auto">
+{% endfor %}
+
+{% endblock%}
+Capture.PNG
+
+

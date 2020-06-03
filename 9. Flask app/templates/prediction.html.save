@@ -1,0 +1,24 @@
+{% extends 'layout.html' %}
+
+{% block body%}
+    <p></p>
+    <p></p>
+    <h1> Let's predict Velib availiability for the next 30 days :) </h1>
+        <p></p>
+        <h2>Please select the station.</h2>
+        <p></p>
+
+
+ <form action = "http://localhost:5000/result" method = "POST">
+    <select name="image_selector" value="image_select" >
+      <option value="1001">1001</option>
+  ▾ 7. Flask app/              | 14       <option value="06:00:00">06:00:00</option>                     
+    ▸ static/images/           | 15       <option value="06:15:00">06:15:00</option>      <option value="1002">1002</option>
+      <option value="1003">1003</option>
+    </select>
+     <input type="submit" value="Let's predict!">
+ </form>
+
+<img src="static/images/Background.jpg" align="center" width="500" height="auto">"
+
+{% endblock}

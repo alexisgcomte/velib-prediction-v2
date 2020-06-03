@@ -1,0 +1,28 @@
+{% extends 'layout.html' %}
+
+{% block body%}
+    <p></p>
+    <p></p>
+    <h1> Let's predict January 29, 2020 :) </h1>
+        <p></p>
+        <h2>Please select the starting hour.</h2>
+        <p></p>
+
+
+ <form action = "http://localhost:5000/result" method = "POST">
+    <select name="image_selector" value="image_select" >
+      <option value="1001.png">1001</option>
+      <option value="1002.png">1002</option>
+      <option value="1006.png">1006</option>
+      <option value="1007.png">1007</option>
+      <option value="1008.png">1008</option>
+      <option value="1012.png">1012</option>
+      <option value="9034.png">9034</option>
+
+    </select>
+     <input type="submit" value="Let's predict!">
+ </form>
+
+<img src="static/images/Background.jpg" align="center" width="500" height="auto">"
+
+{% endblock%}
