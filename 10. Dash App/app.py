@@ -10,9 +10,10 @@ df = pd.read_csv('samplevelib.csv', index_col=0, parse_dates=True)
 
 # Initialize the app
 app = dash.Dash(__name__)
-app.config.suppress_callback_exceptions = True
-app.scripts.config.serve_locally = True
-app.css.config.serve_locally = True
+server = app.server
+#app.config.suppress_callback_exceptions = True
+#app.scripts.config.serve_locally = True
+#app.css.config.serve_locally = True
 
 
 def get_options(list_stocks):
@@ -57,7 +58,6 @@ app.layout = html.Div(
 # Callback for timeseries price
 @app.callback(Output('timeseries', 'figure'),
               [Input('stockselector', 'value')])
-
 def update_graph(selected_dropdown_value):
     trace1 = []
     df_sub = df
@@ -90,4 +90,4 @@ def update_graph(selected_dropdown_value):
 
 
 if __name__ == '__main__':
-    app.run_server(port=8080)
+    app.run_server()
