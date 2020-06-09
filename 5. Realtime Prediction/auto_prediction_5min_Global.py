@@ -86,7 +86,7 @@ def create_result_df():
     # Creating dataframe for proper predction
 
     df_prediction = pd.DataFrame(index=df.index, columns=['last_observations','model_A', 'model_B', 'date_of_prediction'])
-    
+
     for i in df_prediction.index:
         df_prediction["last_observations"].loc[i] = np.array(df.loc[i])
     
