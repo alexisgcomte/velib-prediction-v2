@@ -11,8 +11,7 @@ from concurrent.futures import ThreadPoolExecutor, ProcessPoolExecutor
 
 class sql_query:
     def __init__(self, credentials_path):
-        self.db_credentials = pd.read_csv(credentials_path, index_col="Field")
-      
+        self.db_credentials = pd.read_csv(credentials_path, index_col="Field")    
     
     def __call__(self, query):
         
@@ -35,7 +34,7 @@ class sql_query:
 
 def retrieve_results():
 
-    request = sql_query("../../aws_mariadb_crendentials.csv")
+    request = sql_query("../../aws_mariadb_credentials.csv")
     query = """
     SELECT * FROM 
     ((SELECT predicted_time, station_id, model_A FROM velib_pred
@@ -108,7 +107,6 @@ app.layout = html.Div(
                              ])
                               ])
         ]
-
 )
 
 
@@ -117,8 +115,8 @@ app.layout = html.Div(
               [Input('stockselector', 'value')])
 def update_graph(selected_dropdown_value):
     trace1 = []
-#    df_sub = df
-    df_sub = pd.read_csv('last_update.csv', index_col=0)
+    df_sub = df
+  #  df_sub = pd.read_csv('last_update.csv', index_col=0)
     for station_name in selected_dropdown_value:
         trace1.append(go.Scatter(x=df[df['station_name'] == station_name].index,
                                  y=df[df['station_name'] == station_name]['model_A'],
@@ -164,6 +162,6 @@ def start_multi():
 
 
 if __name__ == '__main__':
-    
+
     start_multi()
     app.run_server()
