@@ -8,6 +8,8 @@ import mysql.connector as mariadb
 from datetime import timedelta
 import time
 from concurrent.futures import ThreadPoolExecutor, ProcessPoolExecutor
+import datetime
+import timeloop
 
 class sql_query:
     def __init__(self, credentials_path):
@@ -29,8 +31,6 @@ class sql_query:
         field_names = [i[0] for i in cursor.description]
         df = pd.DataFrame(cursor, columns=field_names)
         return df
-    
-# Modify later query to have last value and df
 
 def retrieve_results():
 
@@ -49,27 +49,18 @@ def retrieve_results():
     (SELECT station_id, concat(station_id, ' - ', station_name) station_name FROM db_velib.velib_stations) AS data2
     on data1.station_id = data2.station_id
     """
-#    query = """
-#    SELECT * FROM velib_pred
-#    WHERE date_of_update =
-#    (select max(date_of_update) FROM velib_pred)
-#    """
+    
     df = request(query)
     df.index = df.predicted_time
     df = df[['station_name','model_A']]
 
     return df
 
-# Load data
-#df = pd.read_csv('samplevelib.csv', index_col=0, parse_dates=True)
-
 # Initialize the app
 app = dash.Dash(__name__)
 server = app.server
-#app.config.suppress_callback_exceptions = True
-#app.scripts.config.serve_locally = True
-#app.css.config.serve_locally = True
 
+# Initalizing the data
 df = retrieve_results()
 
 def get_options(list_stocks):
@@ -79,47 +70,46 @@ def get_options(list_stocks):
 
     return dict_list
 
-
 app.layout = html.Div(
     children=[
         html.Div(className='row',
                  children=[
-                    html.Div(className='three columns div-user-controls',
+                    html.Div(className='two columns div-user-controls',
                              children=[
-                                 html.H2('DASH - Velib Prediction'),
-                                 html.P("Let's predict velib availiability ! ;)"),
-                                 html.P('Pick one or more stations.'),
+                                 html.H2('Prediction Velib - Bêta'),
+                                 html.P("Prédisons la disponibilité des vélib! ;)"),
+                                 html.P('Selectionnez une ou plusieurs stations.'),
                                  html.Div(
                                      className='div-for-dropdown',
                                      children=[
                                          dcc.Dropdown(id='stockselector', options=get_options(df['station_name'].unique()),
                                                       multi= True, value=[df['station_name'].sort_values()[0]],
-                                                      style={'backgroundColor': '#1E1E1E'},
+                                                      style={'backgroundColor': '#ffffff'},
                                                       className='stockselector'
                                                       ),
                                      ],
-                                     style={'color': '#1E1E1E'})
+                                     style={'color': '#ffffff'})
                                 ]
                              ),
-                    html.Div(className='nine columns div-for-charts bg-grey',
+                    html.Div(className='ten columns div-for-charts bg-grey',
                              children=[
                                  dcc.Graph(id='timeseries', config={'displayModeBar': False}, animate=True)
-                             ])
-                              ])
-        ]
-)
-
+                    ])])])
 
 # Callback for timeseries price
+
 @app.callback(Output('timeseries', 'figure'),
               [Input('stockselector', 'value')])
 def update_graph(selected_dropdown_value):
     trace1 = []
-    df_sub = df
-  #  df_sub = pd.read_csv('last_update.csv', index_col=0)
+    df_sub = pd.read_csv('last_update.csv', index_col=0)
+    #df_sub = df
+    print(' \n Dash callback readling data - date :', datetime.datetime.now(), 
+    '\n Last predected hour', df.tail(1).index[0], '\n')
+
     for station_name in selected_dropdown_value:
-        trace1.append(go.Scatter(x=df[df['station_name'] == station_name].index,
-                                 y=df[df['station_name'] == station_name]['model_A'],
+        trace1.append(go.Scatter(x=df_sub[df_sub['station_name'] == station_name].index,
+                                 y=df_sub[df_sub['station_name'] == station_name]['model_A'],
                                  mode='lines',
                                  opacity=0.7,
                                  name=station_name,
@@ -127,41 +117,36 @@ def update_graph(selected_dropdown_value):
     traces = [trace1]
     data = [val for sublist in traces for val in sublist]
     figure = {'data': data,
-              #data
               'layout': go.Layout(
-                  colorway=["#5E0DAC", '#FF4F00', '#375CB1', '#FF7400', '#FFF400', '#FF0056'],
-                  template='plotly_dark',
-                  paper_bgcolor='rgba(0, 0, 0, 0)',
-                  plot_bgcolor='rgba(0, 0, 0, 0)',
+                  colorway=["#04d120", '#1f04d1', '#ff4800', '#ffea00', '#0cdceb', '#e40ceb'],
+                  template='plotly_white',
+                  paper_bgcolor='#ffffff',
+                  plot_bgcolor='#ffffff',
                   margin={'b': 15},
                   hovermode='x',
                   autosize=True,
                   title={'text': 'Availiability', 'font': {'color': 'white'}, 'x': 0.5},
                   xaxis={'range': [df_sub.index.min(), df_sub.index.max()]},
-              ),
-
-              }
+                  yaxis={'range': [0, df_sub.model_A.max()]},
+              )}
 
     return figure
 
-UPDADE_INTERVAL = 60
 
-def get_new_data_every(period=UPDADE_INTERVAL):
-    """Update the data every 'period' seconds"""
-    while True:
+# Timeloop pipeline: requesting new data every minute 
+  
+tl = timeloop.Timeloop()
+
+@tl.job(interval=timedelta(minutes=1))
+def get_new_data_every_timeloop():
         df = retrieve_results()
         df.to_csv('./last_update.csv')
-        print("data updated")
-        time.sleep(period)
-        
+        print(' \n Updating prediction data - date :', datetime.datetime.now(), 
+        '\n Last predected hour', df.tail(1).index[0], '\n')
 
-def start_multi():
-    executor = ProcessPoolExecutor(max_workers=1)
-    executor.submit(get_new_data_every)
-    
+tl.start()
 
+# Main fuction
 
 if __name__ == '__main__':
-
-    start_multi()
     app.run_server()
