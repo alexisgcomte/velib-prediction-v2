@@ -9,8 +9,6 @@ import mysql.connector as mariadb
 import time
 from dash.dependencies import Input, Output
 from datetime import timedelta
-from concurrent.futures import ThreadPoolExecutor, ProcessPoolExecutor
-
 
 class sql_query:
     def __init__(self, credentials_path):
