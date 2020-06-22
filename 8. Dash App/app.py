@@ -35,7 +35,7 @@ class sql_query:
 
 def retrieve_results():
 
-    request = sql_query("../../aws_mariadb_credentials.csv")
+    request = sql_query("aws_mariadb_credentials.csv")
     query = """
     SELECT * FROM 
     ((SELECT predicted_time, station_id, model_A FROM velib_pred
