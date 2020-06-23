@@ -10,6 +10,7 @@ import time
 from dash.dependencies import Input, Output
 from datetime import timedelta
 
+
 class sql_query:
     def __init__(self, credentials_path):
         self.db_credentials = pd.read_csv(credentials_path, index_col="Field")    
@@ -63,6 +64,7 @@ server = app.server
 # Initalizing the data
 
 df = retrieve_results()
+df.to_csv('./last_update.csv')
 
 # Options for the list of stocks
 
