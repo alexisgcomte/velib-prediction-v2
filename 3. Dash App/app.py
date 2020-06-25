@@ -9,7 +9,10 @@ import mysql.connector as mariadb
 import time
 from dash.dependencies import Input, Output
 from datetime import timedelta
+<<<<<<< HEAD:3. Dash App/app.py
 
+=======
+>>>>>>> Adding description:8. Dash App/app.py
 
 class sql_query:
     def __init__(self, credentials_path):
